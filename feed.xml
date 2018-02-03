@@ -1,0 +1,115 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<rss version='2.0' xmlns:atom='http://www.w3.org/2005/Atom'>
+<channel>
+<atom:link href='http://aaroncowley.com' rel='self' type='application/rss+xml'/>
+<title>
+Aaron's Blog
+</title>
+<link>
+http://aaroncowley.com
+</link>
+<description>
+A blog about whatever I want
+</description>
+<lastBuildDate>
+Fri, 02 Feb 2018 21:18:20 -0700
+</lastBuildDate>
+<generator>
+clj-rss
+</generator>
+<item>
+<guid>
+http://aaroncowley.com/blog/posts-output/2018-02-02-archlinuxinstall/
+</guid>
+<link>
+http://aaroncowley.com/blog/posts-output/2018-02-02-archlinuxinstall/
+</link>
+<title>
+Quick Install Arch Linux
+</title>
+<description>
+&lt;h2 id=&quot;introduction&quot;&gt;Introduction&lt;/h2&gt;&lt;p&gt;&lt;a href='https://www.archlinux.org/'&gt;Arch linux&lt;/a&gt; is probably the best Operating System out there for power users, programmers, and people who like to do things the hard way. &lt;a href='https://www.gentoo.org/get-started/about/'&gt;Gentoo&lt;/a&gt; is another great DIY distro for those with a few hours - days to spare.  I like to have any given system up and running within an hour or less and Arch Linux, once mastered, shouldnt take anyone too long to install and configure.  Its install process compared to installers from other battle-tested distroburions, like Debian, is a lot more manual and therefore, more customizable.  A Linux install, regardless of the distro, follows the same basic steps.  With Arch you do these yourself and essentially build your own system from the ground up.&lt;br /&gt;&lt;/p&gt;&lt;p&gt;This guide is for those of us who love Arch Linux and want a trimmed installation guide with just the commands needed to get a minimal install on a modern x86_64 EFI system up and running speedily.  The goal of this guide is to be less wordy than most Arch Linux install guides so that one can quickly go from command to command without much searching.  If you have questions consult the official &lt;a href='https://wiki.archlinux.org/index.php/Installation_guide'&gt;Arch Linux install guide&lt;/a&gt;.&lt;/p&gt;&lt;h2 id=&quot;writing&amp;#95;to&amp;#95;a&amp;#95;usb&quot;&gt;Writing to a USB&lt;/h2&gt;&lt;p&gt;Insert the USB to be used for writing.  Run:&lt;/p&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;lsblk
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;to find your USB drive's letter.&lt;/p&gt;&lt;p&gt;Run the command below from a Linux terminal, of course replacign the &quot;X&quot; with the letter of your USB drive&lt;/p&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;sudo dd if=&amp;quot;put your arch iso here&amp;quot; of=/dev/sdX bs=4M status=progress &amp;amp;&amp;amp; sync
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&quot;boot&amp;#95;up&amp;#95;the&amp;#95;installer&quot;&gt;Boot up the Installer&lt;/h2&gt;&lt;p&gt;You should be greeted by the &quot;root@archiso&quot; prompt.&lt;/p&gt;&lt;p&gt;Run:&lt;/p&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;efivar -l
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;If you are presented with an alarmingly large wall of text that means you booted into EFI mode, congrats.&lt;/p&gt;&lt;p&gt;If you arent connected to ethernet, you should connect to ethernet.&lt;br /&gt;&lt;/p&gt;&lt;p&gt;If you are stubborn and want to setup wireless this second refer to &lt;a href='https://wiki.archlinux.org/index.php/Wireless_network_configuration'&gt;here&lt;/a&gt; Then run:&lt;/p&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;ping archlinux.org
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;If you receive some responses then you are ready to proceed to the next step.  If not consult &lt;a href='https://wiki.archlinux.org/index.php/Network_configuration#Device_driver'&gt;here&lt;/a&gt;&lt;/p&gt;&lt;h2 id=&quot;keymaps&quot;&gt;Keymaps&lt;/h2&gt;&lt;p&gt;If you do not use the standard English Qwerty layout run:&lt;/p&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;loadkeys &amp;lt;your 2 letter layout here&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Else, continue to the next section&lt;/p&gt;&lt;h2 id=&quot;partitioning&quot;&gt;Partitioning&lt;/h2&gt;&lt;p&gt;I find parted to be the easiest tool for the job.  I typically stick with the simple boot, root, swap partition architecure.  Your swap space should generally be the same as your RAM if you want to be able to hibernate a computer under a full workload.&lt;br /&gt;&lt;/p&gt;&lt;p&gt;List the current Drives.  You don't want to install Arch onto your USB do you ;)&lt;/p&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;lsblk
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Your harddrive/ssd should be /dev/sda but if not remember its letter.  /dev/sda will be used for the remainder of the guide.&lt;/p&gt;&lt;p&gt;Open parted with reference to your drive:&lt;/p&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;parted /dev/sda
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Run the print command within parted to find your disk's size.&lt;/p&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;&amp;#40;parted&amp;#41; print
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Wipe your entire disk, and create a GPT table.&lt;/p&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;&amp;#40;parted&amp;#41; mklabel gpt
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Create your partition table, replace size with the value of your total disk space - your RAM&lt;/p&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;&amp;#40;parted&amp;#41; mkpart ESP fat32 1049kB 538MB
+&amp;#40;parted&amp;#41; set 1 boot on
+
+&amp;#40;parted&amp;#41; mkpart primary ext4 538MB &amp;#91;SIZE&amp;#93;
+&amp;#40;parted&amp;#41; mkpart primary linux-swap &amp;#91;SIZE&amp;#93; 100%
+&amp;#40;parted&amp;#41; quit
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Run lsblk again to check your results of the above:&lt;/p&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;lsblk /dev/sda
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Now actually create these partitions via bash:&lt;/p&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;mkfs.vfat -F32 /dev/sda1
+mkfs.ext4 /dev/sda2
+mkswap /dev/sda3
+swapon /dev/sda3
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&quot;install&amp;#95;arch&quot;&gt;Install Arch&lt;/h2&gt;&lt;p&gt;Get excited its pacstrap time.&lt;/p&gt;&lt;p&gt;Mount the root &quot;/&quot; partition:&lt;/p&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;mount /dev/sda2 /mnt
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Mount the &quot;/boot&quot; partition:&lt;/p&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;mkdir -p /mnt/boot
+mount /dev/sda1 /mnt/boot
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Install the base system:&lt;/p&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;pacstrap /mnt base base-devel
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Generate the fstab:&lt;/p&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;genfstab -U -p /mnt &amp;gt;&amp;gt; /mnt/etc/fstab
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Edit the fstab file so that the / partition ends with 2, the boot ends with 1 and swap ends in 0&lt;/p&gt;&lt;p&gt;If you would like the fstab to be optimized for ssd use add discard to the end of the ext4 partition.&lt;/p&gt;&lt;p&gt;Below is my current fstab&lt;/p&gt;&lt;pre&gt;&lt;code&gt;# Static information about the filesystems.
+# See fstab&amp;#40;5&amp;#41; for details.
+
+# &amp;lt;file system&amp;gt; &amp;lt;dir&amp;gt; &amp;lt;type&amp;gt; &amp;lt;options&amp;gt; &amp;lt;dump&amp;gt; &amp;lt;pass&amp;gt;
+# /dev/sda2
+UUID    /         	ext4      	rw,relatime,data=ordered,discard	0 2
+
+# /dev/sda1
+UUID     	/boot     	vfat      	rw,relatime,fmask=0022,dmask=0022,codepage=437,iocharset=iso8859-1,shortname=mixed,utf8,errors=remount-ro	0 1
+
+# /dev/sda3
+UUID    none      	swap      	defaults,pri=-2	0 0
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&quot;base&amp;#95;system&amp;#95;configuration&quot;&gt;Base System Configuration&lt;/h2&gt;&lt;p&gt;Enter the new system with arch-chroot:&lt;/p&gt;&lt;p&gt;To prioritize, we need vim before anything else, this step is very important.&lt;/p&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;pacman -S gvim
+&lt;/code&gt;&lt;/pre&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;arch-chroot /mnt
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Open locale.gen:&lt;/p&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;vim /etc/locale.gen
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Uncomment each locale, the en_US.UTF-8 UTF-8 locale is at the top of the file so uncommenting it here is the easiest place to do so for a standard english language system.&lt;/p&gt;&lt;p&gt;Save and exit the file and generate the locales from bash:&lt;/p&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;locale-gen
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Create the locale.conf file with your chosen locale:&lt;/p&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;echo LANG=en&amp;#95;US.UTF-8 &amp;gt; /etc/locale.conf
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;The above works only if you selected the english UTF-8 locale.&lt;/p&gt;&lt;p&gt;Go ahead and export it for the current session as well:&lt;/p&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;export LANG=en&amp;#95;US.UTF-8
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Set the timezone with the below command.  If your timezone differs from mine then browse to /usr/share/zoneinfo/ and you will see all of the zones, cd into the zone and then find your subzone.&lt;/p&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;ln -s /usr/share/zoneinfo/Zone/SubZone /etc/localtime
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Now set the hardware clock:&lt;/p&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;hwclock --systohc --utc
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&quot;system&amp;#95;administration&quot;&gt;System Administration&lt;/h2&gt;&lt;p&gt;First set an admin password:&lt;/p&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;passwd
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Name your new system with the following:&lt;/p&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;echo good-system-name &amp;gt; /etc/hostname
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Edit the /etc/hosts file to also refer to your new hostname.  Add these lines if they are not there.  If they are then append your chosen name onto the end of the lines.&lt;/p&gt;&lt;pre&gt;&lt;code&gt;127.0.0.1 localhost.localdomain localhost good-system-name
+::1 localhost.localdomain localhost good-system-name
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Install Network Manager&lt;/p&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;pacman -S networkmanager
+systemctl enable networkmanager
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Use systemd-boot to set up your EFI system&lt;/p&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;pacman -S dosfstools
+bootctl --path=/boot install
+vim /boot/loader/entries/arch.conf
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;This all will have installed a bootloader and opened up a new boot loader conffile for systemd to boot the system.  Add the following lines for a nice speedy boot.&lt;/p&gt;&lt;pre&gt;&lt;code&gt;title Arch Linux
+linux /vmlinuz-linux
+initrd /initramfs-linux.img
+options root=/dev/sda2 rw elevator=deadline quiet splash resume=/dev/sda3 nmi&amp;#95;watchdog=0
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Save and exit and now configure systemd boot to find our config file:&lt;/p&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;echo &amp;quot;default arch&amp;quot; &amp;gt; /boot/loader/loader.conf
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Reboot with the following commands:&lt;/p&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;exit
+reboot
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&quot;finishing&amp;#95;up&quot;&gt;Finishing Up&lt;/h2&gt;&lt;p&gt;Create a new user&lt;/p&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;groupadd users
+useradd -m -g users -G wheel -s /bin/bash goodUsername
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Install sudo and open up the sudoers file.&lt;/p&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;pacman -S sudo
+vim /etc/sudoers
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Uncomment the line:&lt;/p&gt;&lt;pre&gt;&lt;code&gt;%wheel ALL=&amp;#40;ALL&amp;#41; ALL
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Save and exit.  This line allows your user to execute commands from roor with: &lt;/p&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;sudo &amp;lt;command&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Create a password for your new user with:&lt;/p&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;passwd goodUsername
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Lock up root logins with:&lt;/p&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;passwd -l root
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Update your system and install packer (the best aur helper):&lt;/p&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;sudo pacman -Syu
+sudo pacman -S fakeroot jshon expac git wget
+mkdir packer &amp;amp;&amp;amp; cd packer
+wget https://aur.archlinux.org/cgit/aur.git/plain/PKGBUILD?h=packer
+mv PKGBUILD\?h\=packer PKGBUILD
+makepkg
+sudo pacman -U packer-&amp;#42;.pkg.tar.xz
+cd .. &amp;amp;&amp;amp; rm -rf packer
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;You now have a very minimal but complete Arch Linux install.  Look into some &lt;a href='https://wiki.archlinux.org/index.php/window_manager'&gt;window managers&lt;/a&gt; or &lt;a href='https://wiki.archlinux.org/index.php/desktop_environment'&gt;desktop environments&lt;/a&gt; to install onto your base system to use it as a desktop, or look into using it as a &lt;a href='https://wiki.archlinux.org/index.php/Server'&gt;server&lt;/a&gt;.&lt;/p&gt;
+</description>
+<pubDate>
+Fri, 02 Feb 2018 00:00:00 -0700
+</pubDate>
+</item>
+</channel>
+</rss>
