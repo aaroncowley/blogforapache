@@ -121,8 +121,8 @@ UUID     	/boot     	vfat      	rw,relatime,fmask=0022,dmask=0022,codepage=437,i
 
 # /dev/sda3
 UUID    none      	swap      	defaults,pri=-2	0 0
-</code></pre><h2 id="base&#95;system&#95;configuration">Base System Configuration</h2><p>Enter the new system with arch-chroot:</p><p>To prioritize, we need vim before anything else, this step is very important.</p><pre><code class="bash">pacman -S gvim
-</code></pre><pre><code class="bash">arch-chroot /mnt
+</code></pre><h2 id="base&#95;system&#95;configuration">Base System Configuration</h2><p>Enter the new system with arch-chroot:</p><pre><code class="bash">arch-chroot /mnt
+</code></pre><p>To prioritize, we need vim before anything else ;), this step is very important (if you like vim).</p><pre><code class="bash">pacman -S gvim
 </code></pre><p>Open locale.gen:</p><pre><code class="bash">vim /etc/locale.gen
 </code></pre><p>Uncomment each locale, the en_US.UTF-8 UTF-8 locale is at the top of the file so uncommenting it here is the easiest place to do so for a standard english language system.</p><p>Save and exit the file and generate the locales from bash:</p><pre><code class="bash">locale-gen
 </code></pre><p>Create the locale.conf file with your chosen locale:</p><pre><code class="bash">echo LANG=en&#95;US.UTF-8 &gt; /etc/locale.conf
